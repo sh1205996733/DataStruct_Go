@@ -7,7 +7,8 @@ import (
 
 type TaskFunc func()
 
-func TimeTool(title string, task TaskFunc) {
+// Times 耗时
+func Times(title string, task TaskFunc) {
 	if task == nil {
 		return
 	}

@@ -9,10 +9,10 @@ func main() {
 	n := 5
 	//fmt.Println(fib1(5))
 	//fmt.Println(fib2(5))
-	utils.TimeTool("fib1", func() {
+	utils.Times("fib1", func() {
 		fmt.Println(fib1(n))
 	})
-	utils.TimeTool("fib2", func() {
+	utils.Times("fib2", func() {
 		fmt.Println(fib3(n))
 	})
 }
