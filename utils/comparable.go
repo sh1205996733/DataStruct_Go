@@ -1,6 +1,6 @@
-package util
+package utils
 
-// 比较器
+// Comparable 比较器
 type Comparable interface {
 	CompareTo(interface{}) (int, error)
 }

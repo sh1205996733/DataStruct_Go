@@ -1,16 +1,15 @@
-package bbst
+package avl
 
 import (
-	"DataStruct_Go/binarytree"
-	"DataStruct_Go/binarytree/bst"
+	binarytree "DataStruct_Go/06-二叉搜索树"
 )
 
-// 平衡二叉搜索树
+// BBST 平衡二叉搜索树
 type BBST struct {
-	bst.BST
+	binarytree.BST
 }
 
-// 回调函数
+// CallBack 回调函数
 type CallBack interface {
 	CallFunc(*binarytree.Node, *binarytree.Node, ...*binarytree.Node)
 }
@@ -48,7 +47,7 @@ func (bbst *BBST) Rotate(r, b, c, d, e, f *binarytree.Node, callBack CallBack) {
 	callBack.CallFunc(b, f, d)
 }
 
-// 左旋转
+// RotateLeft 左旋转
 func (bbst *BBST) RotateLeft(grand *binarytree.Node, callBack ...CallBack) {
 	parent := grand.Right
 	child := parent.Left
@@ -57,7 +56,7 @@ func (bbst *BBST) RotateLeft(grand *binarytree.Node, callBack ...CallBack) {
 	bbst.AfterRotate(grand, parent, child, callBack...)
 }
 
-// 右旋转
+// RotateRight 右旋转
 func (bbst *BBST) RotateRight(grand *binarytree.Node, callBack ...CallBack) {
 	parent := grand.Left
 	child := parent.Right
@@ -66,7 +65,7 @@ func (bbst *BBST) RotateRight(grand *binarytree.Node, callBack ...CallBack) {
 	bbst.AfterRotate(grand, parent, child, callBack...)
 }
 
-// 旋转之后更新节点的parent和高度
+// AfterRotate 旋转之后更新节点的parent和高度
 func (bbst *BBST) AfterRotate(grand, parent, child *binarytree.Node, callBack ...CallBack) {
 	// 让parent称为子树的根节点
 	parent.Parent = grand.Parent

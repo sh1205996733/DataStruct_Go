@@ -1,11 +1,11 @@
-package util
+package utils
 
 import (
 	"fmt"
 	"reflect"
 )
 
-// 获取left、right最大值
+// Max 获取left、right最大值
 func Max(left, right int) int {
 	if left > right {
 		return left
@@ -13,7 +13,7 @@ func Max(left, right int) int {
 	return right
 }
 
-// 条件返回 三元运算
+// If 条件返回 三元运算
 func If(condition bool, trueVal, falseVal interface{}) interface{} {
 	if condition {
 		return trueVal
@@ -21,12 +21,12 @@ func If(condition bool, trueVal, falseVal interface{}) interface{} {
 	return falseVal
 }
 
-// 转换成字符串
-func ToString(value interface{}) string {
+// ToString 转换成字符串
+func ToString(value any) string {
 	return fmt.Sprintf("%v", value)
 }
 
-// 转换成字符串
-func ValueOf(value interface{}) reflect.Value {
+// ValueOf 返回value的类型
+func ValueOf(value any) reflect.Value {
 	return reflect.ValueOf(value)
 }

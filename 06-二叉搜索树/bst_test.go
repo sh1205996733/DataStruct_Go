@@ -1,8 +1,8 @@
-package bst
+package binarytree
 
 import (
+	"DataStruct_Go/print/printer"
 	"fmt"
-	"leetcode/print/printer"
 	"testing"
 )
 

@@ -1,15 +1,14 @@
 package avl
 
 import (
-	"DataStruct_Go/binarytree"
-	"DataStruct_Go/binarytree/bbst"
-	"DataStruct_Go/binarytree/util"
+	binarytree "DataStruct_Go/06-二叉搜索树"
+	"DataStruct_Go/utils"
 	"math"
 )
 
-// AVL树
+// AVLTree AVL树
 type AVLTree struct {
-	bbst.BBST
+	BBST
 }
 
 func NewAVLTree() *AVLTree {
@@ -19,7 +18,7 @@ func NewAVLTree() *AVLTree {
 }
 
 func (avl *AVLTree) Init() {
-	avl.BSTClass = util.ValueOf(avl)
+	avl.BSTClass = utils.ValueOf(avl)
 }
 
 func (avl *AVLTree) CreateNode(value interface{}, parent *binarytree.Node) *binarytree.Node {
@@ -146,7 +145,7 @@ func (t *avlNode) rightHeight() int {
 
 // 更新高度height (最高的子树高度加1)
 func (t *avlNode) updateHeight() {
-	t.height = util.Max(t.leftHeight(), t.rightHeight()) + 1
+	t.height = utils.Max(t.leftHeight(), t.rightHeight()) + 1
 }
 
 // 计算平衡因子(左右高度差的绝对值)
@@ -168,7 +167,7 @@ func tallerChild(node *binarytree.Node) *binarytree.Node {
 	if leftHeight < rightHeight {
 		return node.Right
 	}
-	return util.If(node.IsLeftChild(), node.Left, node.Right).(*binarytree.Node) //相等看一下父节点是左子树还是右子树
+	return utils.If(node.IsLeftChild(), node.Left, node.Right).(*binarytree.Node) //相等看一下父节点是左子树还是右子树
 }
 
 func (t *avlNode) ToString() string {
@@ -176,5 +175,5 @@ func (t *avlNode) ToString() string {
 	if t.Node.Parent != nil {
 		parentString = t.Node.Parent.String()
 	}
-	return t.Node.String() + "_p(" + parentString + ")_h(" + util.ToString(t.height) + ")"
+	return t.Node.String() + "_p(" + parentString + ")_h(" + utils.ToString(t.height) + ")"
 }

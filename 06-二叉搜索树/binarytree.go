@@ -6,17 +6,18 @@ import (
 	"reflect"
 )
 
-// 二叉树
+// BinaryTree 二叉树
 type BinaryTree struct {
 	Size int
 	Root *Node
 }
+
 type Node struct {
-	Value  interface{}
+	Value  any
 	Parent *Node
 	Left   *Node
 	Right  *Node
-	Class  interface{} //子类对象，继承者需要给此字段赋值
+	Class  any //子类对象，继承者需要给此字段赋值
 }
 
 func (n *Node) IsLeaf() bool {
@@ -32,7 +33,7 @@ func (n *Node) IsRightChild() bool {
 	return n.Parent != nil && n.Parent.Right == n
 }
 
-// 返回兄弟节点
+// Subling 返回兄弟节点
 func (n *Node) Subling() *Node {
 	if n.IsLeftChild() {
 		return n.Parent.Right
@@ -42,6 +43,7 @@ func (n *Node) Subling() *Node {
 	}
 	return nil
 }
+
 func (n *Node) String() string {
 	value := reflect.ValueOf(n.Value).MethodByName("Print")
 	if value.IsValid() {
@@ -59,6 +61,7 @@ func (n *Node) LNode() interface{} {
 func (n *Node) RNode() interface{} {
 	return n.Right
 }
+
 func (n *Node) ToString() interface{} {
 	if n.Class != nil {
 		method := reflect.ValueOf(n.Class).MethodByName("ToString")
@@ -101,29 +104,31 @@ func (n *BinaryTree) RootNode() *Node {
 	return n.Root
 }
 
-// 元素的数量
+// Count 元素的数量
 func (n *BinaryTree) Count() int {
 	return n.Size
 }
 
-// 是否为空
+// IsEmpty 是否为空
 func (n *BinaryTree) IsEmpty() bool {
 	return n.Size == 0
 }
 
-// 清空所有元素
+// Clear 清空所有元素
 func (n *BinaryTree) Clear() {
 	n.Size = 0
 	n.Root = nil
 }
 
-// 前序遍历
+// PreorderTraversal 前序遍历
 func (n *BinaryTree) PreorderTraversal(visitor ...Visitor) {
 	if visitor != nil && len(visitor) == 1 {
 		preorderTraversal(n.Root, &visitor[0])
 	}
 }
-func preorderTraversal(root *Node, visitor *Visitor) {
+
+// preorderTraversal0 前序遍历递归版
+func preorderTraversal0(root *Node, visitor *Visitor) {
 	if root == nil || visitor.Stop {
 		return
 	}
@@ -132,11 +137,33 @@ func preorderTraversal(root *Node, visitor *Visitor) {
 	preorderTraversal(root.Right, visitor)
 }
 
-// 中序遍历
+// preorderTraversal 前序遍历非递归版
+func preorderTraversal(root *Node, visitor *Visitor) {
+	if root == nil {
+		return
+	}
+	stack := []*Node{root}
+	for len(stack) > 0 {
+		top := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		// 访问node节点
+		visitor.Stop = visitor.Visit(top.Value)
+		if top.Right != nil { // 右边不为空 就入栈
+			stack = append(stack, top.Right)
+		}
+		if top.Left != nil { // 左边不为空 就一直向左遍历
+			stack = append(stack, top.Left)
+		}
+	}
+}
+
+// InorderTraversal 中序遍历
 func (n *BinaryTree) InorderTraversal() {
 	inorderTraversal(n.Root)
 }
-func inorderTraversal(node *Node) {
+
+// inorderTraversal0 中序遍历递归版
+func inorderTraversal0(node *Node) {
 	if node == nil {
 		return
 	}
@@ -145,11 +172,30 @@ func inorderTraversal(node *Node) {
 	inorderTraversal(node.Right)
 }
 
-// 后序遍历
+// inorderTraversal 中序遍历非递归版
+func inorderTraversal(root *Node) {
+	node := root
+	var stack []*Node
+	for node != nil || len(stack) > 0 {
+		if node != nil {
+			stack = append(stack, node)
+			node = node.Left
+		} else {
+			node = stack[len(stack)-1]
+			fmt.Println(node.Value)
+			stack = stack[:len(stack)-1]
+			node = node.Right
+		}
+	}
+}
+
+// PostorderTraversal 后序遍历
 func (n *BinaryTree) PostorderTraversal() {
 	postorderTraversal(n.Root)
 }
-func postorderTraversal(node *Node) {
+
+// postorderTraversal 后序遍历递归版
+func postorderTraversal0(node *Node) {
 	if node == nil {
 		return
 	}
@@ -158,7 +204,29 @@ func postorderTraversal(node *Node) {
 	fmt.Print(node.String() + " ")
 }
 
-// 层序遍历
+// postorderTraversal 后序遍历非递归版
+func postorderTraversal(root *Node) {
+	var prev *Node // 记录上一次弹出访问的节点
+	stack := []*Node{root}
+	for len(stack) > 0 {
+		top := stack[len(stack)-1]
+		if top.IsLeaf() || prev != nil && prev.Parent == top { //如果是叶子节点 或者上一个弹出节点的父节点等于top
+			prev = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			// 访问节点
+			fmt.Println(prev.Value)
+		} else {
+			if top.Right != nil { // 右边不为空 就入栈
+				stack = append(stack, top.Right)
+			}
+			if top.Left != nil { // 左边不为空 就一直向左遍历
+				stack = append(stack, top.Left)
+			}
+		}
+	}
+}
+
+// LevelOrderTraversal 层序遍历
 func (n *BinaryTree) LevelOrderTraversal() {
 	if n.Root == nil {
 		return
@@ -177,7 +245,7 @@ func (n *BinaryTree) LevelOrderTraversal() {
 	}
 }
 
-// 前驱节点(中序遍历前一个)
+// Predecessor 前驱节点(中序遍历前一个)
 func (n *BinaryTree) Predecessor(node *Node) *Node {
 	if node == nil {
 		return nil
@@ -199,7 +267,7 @@ func (n *BinaryTree) Predecessor(node *Node) *Node {
 	return node.Parent
 }
 
-// 后继节点(中序遍历后一个)
+// Successor 后继节点(中序遍历后一个)
 func (n *BinaryTree) Successor(node *Node) *Node {
 	if node == nil {
 		return nil
@@ -219,7 +287,7 @@ func (n *BinaryTree) Successor(node *Node) *Node {
 	return node.Parent
 }
 
-// 判断是否是完全二叉树
+// IsComplete0 判断是否是完全二叉树
 func (n *BinaryTree) IsComplete0() bool {
 	if n.Root == nil {
 		return false
@@ -273,13 +341,13 @@ func (n *BinaryTree) IsComplete() bool {
 	return true
 }
 
-// 树的高度
+// Height 树的高度
 func (n *BinaryTree) Height() int {
 	fmt.Println(height1(n.Root))
 	return height(n.Root)
 }
 
-// 递归
+// 树的高度 递归
 func height1(root *Node) int {
 	if root == nil {
 		return 0
@@ -293,7 +361,7 @@ func height1(root *Node) int {
 	return 1 + rightHeight
 }
 
-// 非递归
+// 树的高度 非递归
 func height(root *Node) int {
 	if root == nil {
 		return 0

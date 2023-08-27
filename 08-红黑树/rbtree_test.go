@@ -1,8 +1,8 @@
 package rbtree
 
 import (
+	"DataStruct_Go/print/printer"
 	"fmt"
-	"leetcode/print/printer"
 	"testing"
 )
 

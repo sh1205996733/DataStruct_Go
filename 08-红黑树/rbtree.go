@@ -1,9 +1,10 @@
 package rbtree
 
 import (
-	"leetcode/binarytree"
-	"leetcode/binarytree/bbst"
-	"leetcode/binarytree/util"
+	binarytree "DataStruct_Go/06-二叉搜索树"
+	avl "DataStruct_Go/07-AVL树"
+	"DataStruct_Go/utils"
+	"fmt"
 )
 
 const (
@@ -11,9 +12,9 @@ const (
 	BLACK = true
 )
 
-// 红黑树
+// RBTree 红黑树
 type RBTree struct {
-	bbst.BBST
+	avl.BBST
 }
 
 func NewRBTree() *RBTree {
@@ -23,7 +24,7 @@ func NewRBTree() *RBTree {
 }
 
 func (rb *RBTree) Init() {
-	rb.BSTClass = util.ValueOf(rb)
+	rb.BSTClass = utils.ValueOf(rb)
 }
 
 func (rb *RBTree) CreateNode(value interface{}, parent *binarytree.Node) *binarytree.Node {
@@ -35,8 +36,9 @@ func (rb *RBTree) CreateNode(value interface{}, parent *binarytree.Node) *binary
 }
 
 func (rb *RBTree) CallFunc(grand, parent *binarytree.Node, param ...*binarytree.Node) {
-
+	fmt.Println(grand, parent, param)
 }
+
 func (rb *RBTree) AfterAdd(node *binarytree.Node) { // 修复性质 4
 	parent := node.Parent
 	// 添加的是根节点 或者 上溢到达了根节点,染成黑色,直接返回
@@ -114,9 +116,9 @@ func (rb *RBTree) AfterRemove(node *binarytree.Node) {
 	// sibling 染成 BLACK，parent 染成 RED，进行旋转
 	// 于是又回到 sibling 是 BLACK 的情况
 	// // 判断被删除的node是左还是右
-	left := parent.Left == nil || node.IsLeftChild()                       //parent.left == null说明当初删除的叶子节点是在左边
-	sibling := util.If(left, parent.Right, parent.Left).(*binarytree.Node) //不能使用node.subling() 因为parent的left和right在删除的时候被清空了
-	if left {                                                              // 被删除的节点在左边，兄弟节点在右边 (左右是对称的)
+	left := parent.Left == nil || node.IsLeftChild()                        //parent.left == null说明当初删除的叶子节点是在左边
+	sibling := utils.If(left, parent.Right, parent.Left).(*binarytree.Node) //不能使用node.subling() 因为parent的left和right在删除的时候被清空了
+	if left {                                                               // 被删除的节点在左边，兄弟节点在右边 (左右是对称的)
 		// 兄弟节点是红色
 		if isRed(sibling) {
 			black(sibling)

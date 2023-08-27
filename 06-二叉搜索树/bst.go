@@ -1,23 +1,22 @@
-package bst
+package binarytree
 
 import (
-	"DataStruct_Go/binarytree"
-	"DataStruct_Go/binarytree/util"
+	"DataStruct_Go/utils"
 	"reflect"
 	"strings"
 )
 
-type Comparator func(e1, e2 interface{}) int
+type Comparator func(e1, e2 any) int
 
-// 二叉搜索树
+// BST 二叉搜索树
 type BST struct {
-	binarytree.BinaryTree
+	BinaryTree
 	Comparator Comparator
 	BSTClass   reflect.Value //子类对象，继承者需要给此字段赋值
 }
 
-// 添加元素
-func (bst *BST) Add(value interface{}) { // 添加元素
+// Add 添加元素
+func (bst *BST) Add(value any) { // 添加元素
 	valueNotNullCheck(value)
 	if bst.Root == nil {
 		bst.Root = bst.createNode(value, nil)
@@ -55,11 +54,11 @@ func (bst *BST) Add(value interface{}) { // 添加元素
 }
 
 // 创建节点
-func (bst *BST) createNode(value interface{}, parent *binarytree.Node) *binarytree.Node {
+func (bst *BST) createNode(value any, parent *Node) *Node {
 	if bst.BSTClass.IsValid() {
 		method := bst.BSTClass.MethodByName("CreateNode")
 		if method.IsValid() {
-			return method.Call([]reflect.Value{reflect.ValueOf(value), reflect.ValueOf(parent)})[0].Interface().(*binarytree.Node)
+			return method.Call([]reflect.Value{reflect.ValueOf(value), reflect.ValueOf(parent)})[0].Interface().(*Node)
 		}
 	} else {
 		return bst.CreateNode(value, parent)
@@ -67,8 +66,8 @@ func (bst *BST) createNode(value interface{}, parent *binarytree.Node) *binarytr
 	return nil
 }
 
-// 新添加节点之后的处理
-func (bst *BST) AfterAdd(newNode *binarytree.Node) {
+// AfterAdd 新添加节点之后的处理
+func (bst *BST) AfterAdd(newNode *Node) {
 	// 新添加节点之后的处理
 	if bst.BSTClass.IsValid() {
 		method := bst.BSTClass.MethodByName("AfterAdd")
@@ -78,13 +77,13 @@ func (bst *BST) AfterAdd(newNode *binarytree.Node) {
 	}
 }
 
-// 删除元素
-func (bst *BST) Remove(value interface{}) { // 删除元素
+// Remove 删除元素
+func (bst *BST) Remove(value any) { // 删除元素
 	remove(bst.node(value), bst)
 }
 
 // 删除指定节点
-func remove(node *binarytree.Node, bst *BST) {
+func remove(node *Node, bst *BST) {
 	if node == nil {
 		return
 	}
@@ -129,8 +128,8 @@ func remove(node *binarytree.Node, bst *BST) {
 	}
 }
 
-// 新添加节点之后的处理
-func (bst *BST) AfterRemove(newNode *binarytree.Node) {
+// AfterRemove 新添加节点之后的处理
+func (bst *BST) AfterRemove(newNode *Node) {
 	// 新添加节点之后的处理
 	if bst.BSTClass.IsValid() {
 		method := bst.BSTClass.MethodByName("AfterRemove")
@@ -140,13 +139,13 @@ func (bst *BST) AfterRemove(newNode *binarytree.Node) {
 	}
 }
 
-// 是否包含某元素
-func (bst *BST) Contains(value interface{}) bool {
+// Contains 是否包含某元素
+func (bst *BST) Contains(value any) bool {
 	return bst.node(value) != nil
 }
 
 // 根据元素内容找节点
-func (bst *BST) node(value interface{}) *binarytree.Node {
+func (bst *BST) node(value any) *Node {
 	node := bst.Root
 	for node != nil {
 		cmp := bst.compare(value, node.Value)
@@ -163,7 +162,7 @@ func (bst *BST) node(value interface{}) *binarytree.Node {
 }
 
 // 返回值等于0，代表e1和e2相等；返回值大于0，代表e1大于e2；返回值小于于0，代表e1小于e2
-func (bst *BST) compare(e1, e2 interface{}) int {
+func (bst *BST) compare(e1, e2 any) int {
 	if bst.Comparator != nil {
 		return bst.Comparator(e1, e2)
 	} //todo 待优化
@@ -173,8 +172,8 @@ func (bst *BST) compare(e1, e2 interface{}) int {
 		var cmp int
 		var err error
 		switch v := e1.(type) {
-		case util.Comparable:
-			cmp, err = (e1.(util.Comparable)).CompareTo(e2)
+		case utils.Comparable:
+			cmp, err = (e1.(utils.Comparable)).CompareTo(e2)
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 			cmp = v.(int) - e2.(int)
 		case string:
@@ -193,7 +192,7 @@ func (bst *BST) compare(e1, e2 interface{}) int {
 	return 0
 }
 
-func valueNotNullCheck(value interface{}) {
+func valueNotNullCheck(value any) {
 	if value == nil {
 		panic("value must not be null")
 	}
