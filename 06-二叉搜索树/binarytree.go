@@ -1,6 +1,7 @@
 package binarytree
 
 import (
+	"DataStruct_Go/utils"
 	"container/list"
 	"fmt"
 	"reflect"
@@ -88,11 +89,6 @@ func (n *Node) ColorOf() bool {
 	return false
 }
 
-type Visitor struct {
-	Stop  bool
-	Visit func(interface{}) bool
-}
-
 func (n *BinaryTree) CreateNode(value interface{}, parent *Node) *Node {
 	node := new(Node)
 	node.Value = value
@@ -121,14 +117,14 @@ func (n *BinaryTree) Clear() {
 }
 
 // PreorderTraversal 前序遍历
-func (n *BinaryTree) PreorderTraversal(visitor ...Visitor) {
+func (n *BinaryTree) PreorderTraversal(visitor ...utils.Visitor) {
 	if visitor != nil && len(visitor) == 1 {
 		preorderTraversal(n.Root, &visitor[0])
 	}
 }
 
 // preorderTraversal0 前序遍历递归版
-func preorderTraversal0(root *Node, visitor *Visitor) {
+func preorderTraversal0(root *Node, visitor *utils.Visitor) {
 	if root == nil || visitor.Stop {
 		return
 	}
@@ -138,7 +134,7 @@ func preorderTraversal0(root *Node, visitor *Visitor) {
 }
 
 // preorderTraversal 前序遍历非递归版
-func preorderTraversal(root *Node, visitor *Visitor) {
+func preorderTraversal(root *Node, visitor *utils.Visitor) {
 	if root == nil {
 		return
 	}
