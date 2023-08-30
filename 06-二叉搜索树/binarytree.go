@@ -63,7 +63,7 @@ func (n *Node) RNode() interface{} {
 	return n.Right
 }
 
-func (n *Node) ToString() interface{} {
+func (n *Node) ToString(index int) interface{} {
 	if n.Class != nil {
 		method := reflect.ValueOf(n.Class).MethodByName("ToString")
 		if method.IsValid() {

@@ -1,25 +1,19 @@
 package printer
 
-// 打印接口
+// BinaryTreeInfo 打印接口
 type BinaryTreeInfo interface {
-	/**
-	 * who is the root node
-	 */
-	RootNode() interface{}
-	/**
-	 * how to get the left child of the node
-	 */
-	LNode() interface{}
-	/**
-	 * how to get the right child of the node
-	 */
-	RNode() interface{}
-	/**
-	 * how to print the node
-	 */
-	ToString() interface{}
-	/**
-	 * what's color of the node (true-red、false-black)
-	 */
+	// RootNode who is the root node
+	RootNode() any
+
+	// LNode how to get the left child of the node
+	LNode() any
+
+	// RNode how to get the right child of the node
+	RNode() any
+
+	// ToString how to print the node
+	ToString() any
+
+	// ColorOf what's color of the node (true-red、false-black)
 	ColorOf() bool
 }
